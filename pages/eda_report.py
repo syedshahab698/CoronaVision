@@ -68,8 +68,6 @@ eda_figures = dbc.Tabs(
 )
 
 layout = html.Div(children=[
-    html.H1(children='This is our Analytics page'),
-	
 	html.Br(),
     html.Div(eda_figures, style={'height': '500px'}),
 ])
