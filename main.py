@@ -159,7 +159,7 @@ def view7():
         showlegend=False,
         width=1000,
         height=500,
-    
+         plot_bgcolor='#F3F3F3', paper_bgcolor='#F3F3F3',
         treemapcolorway=['#F6D55C', '#ED553B', '#3CAEA3', '#20639B', '#173F5F',  '#343A40'],
         # margin=dict(l=0, r=0, t=50, b=0), # Add margin to the top of the figure to make room for the title
        
