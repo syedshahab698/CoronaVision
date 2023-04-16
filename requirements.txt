@@ -4,4 +4,4 @@ plotly
 pandas
 dash_bootstrap_components
 numpy
-sklearn
+scikit-learn
