@@ -280,26 +280,64 @@ def view8():
 # plot(top6_countries_confirmed_cases())
 
 
-# view 1
-# Group the data by country to get the cumulative confirmed cases
-df_cumulative = df.groupby(['country'])['cumulative_cases (confirmed cases)'].max().reset_index()
+def view1():
+    # Group the data by country to get the cumulative confirmed cases
+    df_cumulative = df.groupby(['country'])['cumulative_cases (confirmed cases)'].max().reset_index()
+    
+    # Create a Plotly figure showing a choropleth map of the cumulative confirmed cases
+    world_map_covid = px.choropleth(df_cumulative, locations='country', locationmode='country names', color='cumulative_cases (confirmed cases)',
+                        hover_name='country', range_color=[0, max(df_cumulative['cumulative_cases (confirmed cases)'])],
+                        title='Confirmed Cases Cumulative Around the World')
+    world_map_covid.update_layout(geo=dict(showcountries=True), margin=dict(l=10, r=0, t=0, b=0),
+                                  plot_bgcolor='#F3F3F3', paper_bgcolor='#F3F3F3',coloraxis_colorbar=dict(xanchor='left', x=0))
+    # plot(world_map_covid)
+    
+    
+    # View 2
+    
+    def get_last24h_count(country = 'India'):
+        max_date = df.loc[df['country']==country, 'date_reported'].max()
+        buffer = df.loc[(df['country']==country) & (df['date_reported']==max_date),['deaths', 'cases']]
+        return buffer['deaths'].squeeze(), buffer['cases'].squeeze()
+    
+    # Group the data by country to get the total cases, cases newly reported, deaths total, and deaths newly reported
+    df_country = df.groupby(['country'])['cumulative_cases (confirmed cases)', 'cases', 'cumulative_deaths (confirmed deaths)', 'deaths'].max().reset_index()
+    
+    # Pivot the data to create a table showing the total cases, cases newly reported, deaths total, and deaths newly reported by country
+    table = pd.pivot_table(df_country, values=['cumulative_cases (confirmed cases)', 'cases', 'cumulative_deaths (confirmed deaths)', 'deaths'], index='country', aggfunc='sum')
+    
+    # Sort the table by the _Cumulative_cases_(confirmed_cases) column in descending order
+    table = table.sort_values(by='cumulative_cases (confirmed cases)', ascending=False)
+    
+    table = table[['cumulative_cases (confirmed cases)',
+           'cumulative_deaths (confirmed deaths)']].head()
+    table.columns = ['Cases- cumulative total', 'Deaths - cumulative total']
+    
+    table[['Cases - newly reported in last 24 hours',
+           'Deaths - newly reported in last 24 hours']] = [get_last24h_count(i) for i in table.index]
+    
+    table = table.reset_index()
+    # Create a table using the data
+    fig = go.Figure(data=[go.Table(
+        header=dict(values=list(table.columns),
+                    fill_color='#119dff',
+                    align='left',
+                    font=dict(color='white')),
+        cells=dict(values=[table[column] for column in table.columns],
+                   fill_color='#f2f2f2',
+                   align='left',
+                   font=dict(color='black')))
+    ])
+    
+    # Set title and table properties
+    fig.update_layout(title=""" Coronavirus Disease(COVID-19) Dashboard<br>
+    Situation by Country, Territory & Area""")
+    fig.update_layout( plot_bgcolor='#F3F3F3', paper_bgcolor='#F3F3F3')
+    # plot(fig)
+    return world_map_covid, fig
 
-# Create a Plotly figure showing a choropleth map of the cumulative confirmed cases
-world_map_covid = px.choropleth(df_cumulative, locations='country', locationmode='country names', color='cumulative_cases (confirmed cases)',
-                    hover_name='country', range_color=[0, max(df_cumulative['cumulative_cases (confirmed cases)'])],
-                    title='Confirmed Cases Cumulative Around the World')
 
-
-# View 2
-# Group the data by country to get the total cases, cases newly reported, deaths total, and deaths newly reported
-df_country = df.groupby(['country'])['cumulative_cases (confirmed cases)', 'cases', 'cumulative_deaths (confirmed deaths)', 'deaths'].max().reset_index()
-
-# Pivot the data to create a table showing the total cases, cases newly reported, deaths total, and deaths newly reported by country
-table = pd.pivot_table(df_country, values=['cumulative_cases (confirmed cases)', 'cases', 'cumulative_deaths (confirmed deaths)', 'deaths'], index='country', aggfunc='sum')
-
-# Sort the table by the _Cumulative_cases_(confirmed_cases) column in descending order
-table = table.sort_values(by='cumulative_cases (confirmed cases)', ascending=False)
-
+# view 3 and 4
 
 # fig=px.bar(df,x="date_reported",y="deaths")
 # fig.show()
@@ -317,19 +355,20 @@ table = table.sort_values(by='cumulative_cases (confirmed cases)', ascending=Fal
 
 # df['region_name'] = df['region'].map(region_mapper)
 
-# df_region_total = df.groupby('region_name')['cases'].sum().sort_values(ascending=False).reset_index()
-# df_region_total = df_region_total.loc[df_region_total['region_name']!='Other']
+def view3():
+    df_region_total = df.groupby('region_name')['cases'].sum().sort_values(ascending=False).reset_index()
+    df_region_total = df_region_total.loc[df_region_total['region_name']!='Other']
 
-# region_hbarplot = px.bar(df_region_total, x="cases", y="region_name",
-#                         text=[f"{region}: {cases}" for region, cases in zip(df_region_total['region_name'], df_region_total['cases'])],
-#                           labels={'cases': 'Total Cases', 'region_name': 'Region'},
+    region_hbarplot = px.bar(df_region_total, x="cases", y="region_name",
+                            text=[f"{region}: {cases}" for region, cases in zip(df_region_total['region_name'], df_region_total['cases'])],
+                            labels={'cases': 'Total Cases', 'region_name': 'Region'},
 
-#                           color='region_name', orientation='h')
+                            color='region_name', orientation='h')
 
 
-# # update plot layout
-# region_hbarplot.update_layout(title='Region-wise Total Cases')
-# plot(region_hbarplot)
+    # update plot layout
+    region_hbarplot.update_layout(title='Region-wise Total Cases',plot_bgcolor='#F3F3F3', paper_bgcolor='#F3F3F3')
+    return region_hbarplot
 
 
 

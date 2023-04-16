@@ -3,7 +3,7 @@ from dash import html, dcc, callback, Input, Output
 import numpy as np
 import plotly.graph_objs as go
 import dash_bootstrap_components as dbc
-from main import deaths_by_regions, top6_countries_confirmed_cases, view7, view8
+from main import deaths_by_regions, top6_countries_confirmed_cases, view7, view8, view1, view3
 
 dash.register_page(__name__)
 
@@ -20,6 +20,8 @@ dash.register_page(__name__)
 
 
 charts = {
+    "DashBoard" : view1(),
+    "Region-wise Total Cases" : view3(),
    "COVID Daily Deaths: Top 4 Regions" : deaths_by_regions(),
    "Top 6 Countries by Confirmed Cases": top6_countries_confirmed_cases(),
    
@@ -50,7 +52,7 @@ def two_charts_layout(x):
                 )
             ]
         )
-    ],
+    ],style = {'margin-top':'10px'}
     
 )
 
@@ -59,7 +61,7 @@ def two_charts_layout(x):
 def one_chart_layout(x):
     return html.Div([
         dcc.Graph(figure = x)
-    ])
+    ], style = {'margin-top':'10px'})
 
 eda_figures = dbc.Tabs(
     [
