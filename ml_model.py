@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 
 # from prophet import Prophet
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 # Python
 # from prophet.plot import plot_plotly, plot_components_plotly
 import plotly.graph_objs as go
