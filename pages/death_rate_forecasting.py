@@ -114,7 +114,7 @@ layout = html.Div([
                 ], width=6)
             ], className='mt-3'),
             dbc.Row([
-                dbc.Col(dcc.Loading(dcc.Graph(id='forecast-graph'), width=12))
+                dbc.Col(dcc.Loading(dcc.Graph(id='forecast-graph')), width=12)
             ], className='mt-3')
         ],width = 8),
     ])
