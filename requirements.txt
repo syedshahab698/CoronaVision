@@ -5,4 +5,5 @@ pandas
 dash_bootstrap_components
 numpy
 scikit-learn
-fbprophet
+pystan==2.19.1.1
+prophet
