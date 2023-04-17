@@ -1,3 +1,10 @@
+# COVID-19 Deaths Forecasting
+
+This project is a COVID-19 deaths forecasting tool built using machine learning and time series forecasting methods.
+
+## Installation
+To run this project, you'll need to have Python 3 installed on your machine. You can install all the required packages by running:
+
 
 ## Installation
 
