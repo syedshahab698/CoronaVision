@@ -5,3 +5,4 @@ pandas
 dash_bootstrap_components
 numpy
 scikit-learn
+fbprophet

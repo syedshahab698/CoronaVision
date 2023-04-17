@@ -1,7 +1,7 @@
 import dash
 from dash import html, dcc, Input, Output, callback
 import dash_bootstrap_components as dbc
-from ml_model import get_forecasts_ml
+from ml_model import get_forecasts_ml, get_forecasts_fbprophet
 
 dash.register_page(__name__)
 
@@ -89,7 +89,54 @@ model_desc = html.Div([
     html.P('In this app, the model\'s performance is evaluated using various metrics such as Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE) and the results are displayed alongside the forecasted data for the selected country.')
 ])
 
-layout = html.Div([
+fbprophet_description = html.Div([
+    html.H2('FB Prophet Model Description'),
+    html.P('The FB Prophet model is a time series forecasting model developed by Facebook.'),
+    html.P('This model uses a decomposable time series model with three main components: trend, seasonality, and holidays.'),
+    html.P('The trend component models non-periodic changes in the time series, while the seasonality component models periodic changes.'),
+    html.P('The holidays component models the impact of holidays and special events on the time series.'),
+    html.P('We have trained this model on historical COVID deaths data to forecast future deaths.')
+])
+
+
+# Define content of second tab
+tab2_content =html.Div([
+
+    dbc.Row([
+        dbc.Col( [
+            dbc.Row([
+                dbc.Col(html.H1('COVID Deaths Forecasting for Countries'), className='mt-3')
+             ]),
+            dbc.Row([
+                dbc.Col( fbprophet_description, className='mt-3')
+            ]),
+        ] , width = 4),
+        dbc.Col([
+            dbc.Row([
+                dbc.Col([
+                    html.Label('Select a country'),
+                    dcc.Dropdown(
+                        id='country-dropdown-fbprophet',
+                        options=[
+                            {'label': c, 'value': c} for c in countries_list
+                        ],
+                        value='India'
+                    )
+                ], width=6)
+            ], className='mt-3'),
+            dbc.Row([
+                dbc.Col(dcc.Loading(dcc.Graph(id='forecast-graph-fbprophet')), width=12)
+            ], className='mt-3')
+        ],width = 8),
+    ])
+
+    
+    
+])
+
+
+
+tab1_content = html.Div([
 
     dbc.Row([
         dbc.Col( [
@@ -123,9 +170,25 @@ layout = html.Div([
     
 ])
 
+# Define layout of app with two tabs
+layout = html.Div([
+    dbc.Tabs([
+        dbc.Tab(tab1_content, label='Machine Learning Approach'),
+        dbc.Tab(tab2_content, label='Time Series-Based Approach using FB Prophet'),
+    ])
+])
+
 @callback(Output('forecast-graph', 'figure'), [Input('country-dropdown', 'value')])
 def update_graph(country):
     # code to get the forecast data and model performance for the selected country
     # create a plotly graph object with the data
     fig = get_forecasts_ml(country)
+    return fig
+
+
+@callback(Output('forecast-graph-fbprophet', 'figure'), [Input('country-dropdown-fbprophet', 'value')])
+def update_graph_fbprophet(country):
+    # code to get the forecast data and model performance for the selected country
+    # create a plotly graph object with the data
+    fig = get_forecasts_fbprophet(country)
     return fig
