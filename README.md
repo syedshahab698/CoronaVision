@@ -8,8 +8,6 @@ To run this project, you'll need to have Python 3 installed on your machine. You
 
 ## Installation
 
-Install my-project with npm
-
 ```bash
   pip install -r requirements.txt
 ```
